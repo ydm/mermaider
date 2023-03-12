@@ -6,4 +6,16 @@ contract Hello {
     uint256 public world;
 
     function Mermaider() public {}
+
+    event Generates(uint256 these, uint256 diagrams);
+
+    function Out() external {}
+
+    function Of() internal {}
+
+    function Solidity() private {}
+
+    struct Smart {
+        uint256 contracts;
+    }
 }

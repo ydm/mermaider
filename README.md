@@ -1,19 +1,52 @@
 # Mermaider
 
-Generates [Mermaid](https://mermaid.js.org]) 
+Mermaider is a Python tool that generates
 [class diagrams](https://mermaid.js.org/syntax/classDiagram.html)
 for smart contracts written in [Solidity](https://soliditylang.org/).
 
+
 ### Example
+
+```solidity
+contract Hello {
+    uint256 public world;
+    function Mermaider() public {}
+    event Generates(uint256 these, uint256 diagrams);
+    function Out() external {}
+    function Of() internal {}
+    function Solidity() private {}
+    struct Smart {
+        uint256 contracts;
+    }
+}
+```
+
+is turned into
 
 ```mermaid
 classDiagram
 class `Hello` {
     +uint256 world
     +Mermaider()
+    event Generates(these, diagrams)
+    +Out()
+    #Of()
+    -Solidity()
+}
+`Hello` ..> `Hello.Smart`
+class `Hello.Smart` {
+    <<struct>>
+    -uint256 contracts
+}
 ```
 
+For a more complex example, check [UniswapV3Pool](./examples/UniswapV3Pool.mermaid).
+
+
 ### Usage
+
+- This project has no external Python dependencies.
+- Expected input is `solc` ^0.8 ASTs.
 
 ```
 solc                                                                 \
@@ -26,7 +59,8 @@ cd mermaider
 python main.py </tmp/artifacts.json
 ```
 
-### Install optional dependencies
+
+### Optional dependencies
 
 If `eth-hash` is installed, function signatures (as displayed in the
 diagram) will be additionally hashed and checked against the compiled
