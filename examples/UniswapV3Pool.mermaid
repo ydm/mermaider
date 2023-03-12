@@ -1,0 +1,362 @@
+---
+title: github.com/ydm/mermaider
+---
+classDiagram
+class `NoDelegateCall` {
+    <<abstract>>
+    -address original
+    #()
+    -checkNotDelegateCall()
+}
+class `UniswapV3Pool` {
+    using SafeCast for uint256
+    using SafeCast for int256
+    using Tick for mapping(int24 => struct Tick.Info)
+    using TickBitmap for mapping(int16 => uint256)
+    using Position for mapping(bytes32 => struct Position.Info)
+    using Position for struct Position.Info
+    using Oracle for struct Oracle.Observation[65535]
+    +address factory
+    +address token0
+    +address token1
+    +uint24 fee
+    +int24 tickSpacing
+    +uint128 maxLiquidityPerTick
+    +struct UniswapV3Pool.Slot0 slot0
+    +uint256 feeGrowthGlobal0X128
+    +uint256 feeGrowthGlobal1X128
+    +struct UniswapV3Pool.ProtocolFees protocolFees
+    +uint128 liquidity
+    +mapping[int24 , struct Tick.Info] ticks
+    +mapping[int16 , uint256] tickBitmap
+    +mapping[bytes32 , struct Position.Info] positions
+    +struct Oracle.Observation[65535] observations
+    +()
+    -checkTicks(int24,int24)
+    #_blockTimestamp()
+    -balance0()
+    -balance1()
+    +snapshotCumulativesInside(int24,int24)
+    +observe(uint32[])
+    +increaseObservationCardinalityNext(uint16)
+    +initialize(uint160)
+    -_modifyPosition(struct UniswapV3Pool.ModifyPositionParams)
+    -_updatePosition(address,int24,int24,int128,int24)
+    +mint(address,int24,int24,uint128,bytes)
+    +collect(address,int24,int24,uint128,uint128)
+    +burn(int24,int24,uint128)
+    +swap(address,bool,int256,uint160,bytes)
+    +flash(address,uint256,uint256,bytes)
+    +setFeeProtocol(uint8,uint8)
+    +collectProtocol(address,uint128,uint128)
+}
+`UniswapV3Pool` ..|> `IUniswapV3Pool`
+`UniswapV3Pool` --|> `NoDelegateCall`
+`UniswapV3Pool` ..> `UniswapV3Pool.Slot0`
+`UniswapV3Pool` ..> `UniswapV3Pool.ProtocolFees`
+`UniswapV3Pool` ..> `UniswapV3Pool.ModifyPositionParams`
+`UniswapV3Pool` ..> `UniswapV3Pool.SwapCache`
+`UniswapV3Pool` ..> `UniswapV3Pool.SwapState`
+`UniswapV3Pool` ..> `UniswapV3Pool.StepComputations`
+`UniswapV3Pool` .. `SafeCast`
+`UniswapV3Pool` .. `SafeCast`
+`UniswapV3Pool` .. `Tick`
+`UniswapV3Pool` .. `TickBitmap`
+`UniswapV3Pool` .. `Position`
+`UniswapV3Pool` .. `Position`
+`UniswapV3Pool` .. `Oracle`
+class `UniswapV3Pool.Slot0` {
+    <<struct>>
+    -uint160 sqrtPriceX96
+    -int24 tick
+    -uint16 observationIndex
+    -uint16 observationCardinality
+    -uint16 observationCardinalityNext
+    -uint8 feeProtocol
+    -bool unlocked
+}
+class `UniswapV3Pool.ProtocolFees` {
+    <<struct>>
+    -uint128 token0
+    -uint128 token1
+}
+class `UniswapV3Pool.ModifyPositionParams` {
+    <<struct>>
+    -address owner
+    -int24 tickLower
+    -int24 tickUpper
+    -int128 liquidityDelta
+}
+class `UniswapV3Pool.SwapCache` {
+    <<struct>>
+    -uint8 feeProtocol
+    -uint128 liquidityStart
+    -uint32 blockTimestamp
+    -int56 tickCumulative
+    -uint160 secondsPerLiquidityCumulativeX128
+    -bool computedLatestObservation
+}
+class `UniswapV3Pool.SwapState` {
+    <<struct>>
+    -int256 amountSpecifiedRemaining
+    -int256 amountCalculated
+    -uint160 sqrtPriceX96
+    -int24 tick
+    -uint256 feeGrowthGlobalX128
+    -uint128 protocolFee
+    -uint128 liquidity
+}
+class `UniswapV3Pool.StepComputations` {
+    <<struct>>
+    -uint160 sqrtPriceStartX96
+    -int24 tickNext
+    -bool initialized
+    -uint160 sqrtPriceNextX96
+    -uint256 amountIn
+    -uint256 amountOut
+    -uint256 feeAmount
+}
+class `IERC20Minimal` {
+    <<interface>>
+    +balanceOf(address)*
+    +transfer(address,uint256)*
+    +allowance(address,address)*
+    +approve(address,uint256)*
+    +transferFrom(address,address,uint256)*
+    event Transfer(from, to, value)
+    event Approval(owner, spender, value)
+}
+class `IUniswapV3Factory` {
+    <<interface>>
+    event OwnerChanged(oldOwner, newOwner)
+    event PoolCreated(token0, token1, fee, tickSpacing, pool)
+    event FeeAmountEnabled(fee, tickSpacing)
+    +owner()*
+    +feeAmountTickSpacing(uint24)*
+    +getPool(address,address,uint24)*
+    +createPool(address,address,uint24)*
+    +setOwner(address)*
+    +enableFeeAmount(uint24,int24)*
+}
+class `IUniswapV3Pool` {
+    <<interface>>
+}
+`IUniswapV3Pool` ..|> `IUniswapV3PoolImmutables`
+`IUniswapV3Pool` ..|> `IUniswapV3PoolState`
+`IUniswapV3Pool` ..|> `IUniswapV3PoolDerivedState`
+`IUniswapV3Pool` ..|> `IUniswapV3PoolActions`
+`IUniswapV3Pool` ..|> `IUniswapV3PoolOwnerActions`
+`IUniswapV3Pool` ..|> `IUniswapV3PoolErrors`
+`IUniswapV3Pool` ..|> `IUniswapV3PoolEvents`
+class `IUniswapV3PoolDeployer` {
+    <<interface>>
+    +parameters()*
+}
+class `IUniswapV3FlashCallback` {
+    <<interface>>
+    +uniswapV3FlashCallback(uint256,uint256,bytes)*
+}
+class `IUniswapV3MintCallback` {
+    <<interface>>
+    +uniswapV3MintCallback(uint256,uint256,bytes)*
+}
+class `IUniswapV3SwapCallback` {
+    <<interface>>
+    +uniswapV3SwapCallback(int256,int256,bytes)*
+}
+class `IUniswapV3PoolActions` {
+    <<interface>>
+    +initialize(uint160)*
+    +mint(address,int24,int24,uint128,bytes)*
+    +collect(address,int24,int24,uint128,uint128)*
+    +burn(int24,int24,uint128)*
+    +swap(address,bool,int256,uint160,bytes)*
+    +flash(address,uint256,uint256,bytes)*
+    +increaseObservationCardinalityNext(uint16)*
+}
+class `IUniswapV3PoolDerivedState` {
+    <<interface>>
+    +observe(uint32[])*
+    +snapshotCumulativesInside(int24,int24)*
+}
+class `IUniswapV3PoolErrors` {
+    <<interface>>
+    error LOK()
+    error TLU()
+    error TLM()
+    error TUM()
+    error AI()
+    error M0()
+    error M1()
+    error AS()
+    error IIA()
+    error L()
+    error F0()
+    error F1()
+}
+class `IUniswapV3PoolEvents` {
+    <<interface>>
+    event Initialize(sqrtPriceX96, tick)
+    event Mint(sender, owner, tickLower, tickUpper, amount, amount0, amount1)
+    event Collect(owner, recipient, tickLower, tickUpper, amount0, amount1)
+    event Burn(owner, tickLower, tickUpper, amount, amount0, amount1)
+    event Swap(sender, recipient, amount0, amount1, sqrtPriceX96, liquidity, tick)
+    event Flash(sender, recipient, amount0, amount1, paid0, paid1)
+    event IncreaseObservationCardinalityNext(observationCardinalityNextOld, observationCardinalityNextNew)
+    event SetFeeProtocol(feeProtocol0Old, feeProtocol1Old, feeProtocol0New, feeProtocol1New)
+    event CollectProtocol(sender, recipient, amount0, amount1)
+}
+class `IUniswapV3PoolImmutables` {
+    <<interface>>
+    +factory()*
+    +token0()*
+    +token1()*
+    +fee()*
+    +tickSpacing()*
+    +maxLiquidityPerTick()*
+}
+class `IUniswapV3PoolOwnerActions` {
+    <<interface>>
+    +setFeeProtocol(uint8,uint8)*
+    +collectProtocol(address,uint128,uint128)*
+}
+class `IUniswapV3PoolState` {
+    <<interface>>
+    +slot0()*
+    +feeGrowthGlobal0X128()*
+    +feeGrowthGlobal1X128()*
+    +protocolFees()*
+    +liquidity()*
+    +ticks(int24)*
+    +tickBitmap(int16)*
+    +positions(bytes32)*
+    +observations(uint256)*
+}
+class `BitMath` {
+    <<library>>
+    #mostSignificantBit(uint256)
+    #leastSignificantBit(uint256)
+}
+class `FixedPoint128` {
+    <<library>>
+    -uint256 Q128
+}
+class `FixedPoint96` {
+    <<library>>
+    -uint8 RESOLUTION
+    -uint256 Q96
+}
+class `FullMath` {
+    <<library>>
+    #mulDiv(uint256,uint256,uint256)
+    #mulDivRoundingUp(uint256,uint256,uint256)
+}
+class `Oracle` {
+    <<library>>
+    error I()
+    error OLD()
+    -transform(struct Oracle.Observation,uint32,int24,uint128)
+    #initialize(struct Oracle.Observation[65535],uint32)
+    #write(struct Oracle.Observation[65535],uint16,uint32,int24,uint128,uint16,uint16)
+    #grow(struct Oracle.Observation[65535],uint16,uint16)
+    -lte(uint32,uint32,uint32)
+    -binarySearch(struct Oracle.Observation[65535],uint32,uint32,uint16,uint16)
+    -getSurroundingObservations(struct Oracle.Observation[65535],uint32,uint32,int24,uint16,uint128,uint16)
+    #observeSingle(struct Oracle.Observation[65535],uint32,uint32,int24,uint16,uint128,uint16)
+    #observe(struct Oracle.Observation[65535],uint32,uint32[],int24,uint16,uint128,uint16)
+}
+`Oracle` ..> `Oracle.Observation`
+class `Oracle.Observation` {
+    <<struct>>
+    -uint32 blockTimestamp
+    -int56 tickCumulative
+    -uint160 secondsPerLiquidityCumulativeX128
+    -bool initialized
+}
+class `Position` {
+    <<library>>
+    error NP()
+    #get(mapping(bytes32 => struct Position.Info),address,int24,int24)
+    #update(struct Position.Info,int128,uint256,uint256)
+}
+`Position` ..> `Position.Info`
+class `Position.Info` {
+    <<struct>>
+    -uint128 liquidity
+    -uint256 feeGrowthInside0LastX128
+    -uint256 feeGrowthInside1LastX128
+    -uint128 tokensOwed0
+    -uint128 tokensOwed1
+}
+class `SafeCast` {
+    <<library>>
+    #toUint160(uint256)
+    #toInt128(int256)
+    #toInt256(uint256)
+}
+class `SqrtPriceMath` {
+    <<library>>
+    using SafeCast for uint256
+    #getNextSqrtPriceFromAmount0RoundingUp(uint160,uint128,uint256,bool)
+    #getNextSqrtPriceFromAmount1RoundingDown(uint160,uint128,uint256,bool)
+    #getNextSqrtPriceFromInput(uint160,uint128,uint256,bool)
+    #getNextSqrtPriceFromOutput(uint160,uint128,uint256,bool)
+    #getAmount0Delta(uint160,uint160,uint128,bool)
+    #getAmount1Delta(uint160,uint160,uint128,bool)
+    #getAmount0Delta(uint160,uint160,int128)
+    #getAmount1Delta(uint160,uint160,int128)
+}
+`SqrtPriceMath` .. `SafeCast`
+class `SwapMath` {
+    <<library>>
+    #computeSwapStep(uint160,uint160,uint128,int256,uint24)
+}
+class `Tick` {
+    <<library>>
+    error LO()
+    using SafeCast for int256
+    #tickSpacingToMaxLiquidityPerTick(int24)
+    #getFeeGrowthInside(mapping(int24 => struct Tick.Info),int24,int24,int24,uint256,uint256)
+    #update(mapping(int24 => struct Tick.Info),int24,int24,int128,uint256,uint256,uint160,int56,uint32,bool,uint128)
+    #clear(mapping(int24 => struct Tick.Info),int24)
+    #cross(mapping(int24 => struct Tick.Info),int24,uint256,uint256,uint160,int56,uint32)
+}
+`Tick` ..> `Tick.Info`
+`Tick` .. `SafeCast`
+class `Tick.Info` {
+    <<struct>>
+    -uint128 liquidityGross
+    -int128 liquidityNet
+    -uint256 feeGrowthOutside0X128
+    -uint256 feeGrowthOutside1X128
+    -int56 tickCumulativeOutside
+    -uint160 secondsPerLiquidityOutsideX128
+    -uint32 secondsOutside
+    -bool initialized
+}
+class `TickBitmap` {
+    <<library>>
+    -position(int24)
+    #flipTick(mapping(int16 => uint256),int24,int24)
+    #nextInitializedTickWithinOneWord(mapping(int16 => uint256),int24,int24,bool)
+}
+class `TickMath` {
+    <<library>>
+    error T()
+    error R()
+    -int24 MIN_TICK
+    -int24 MAX_TICK
+    -uint160 MIN_SQRT_RATIO
+    -uint160 MAX_SQRT_RATIO
+    #getSqrtRatioAtTick(int24)
+    #getTickAtSqrtRatio(uint160)
+}
+class `TransferHelper` {
+    <<library>>
+    error TF()
+    #safeTransfer(address,address,uint256)
+}
+class `UnsafeMath` {
+    <<library>>
+    #divRoundingUp(uint256,uint256)
+}
