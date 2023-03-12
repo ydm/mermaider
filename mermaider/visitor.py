@@ -112,6 +112,10 @@ class Visitor:
         params = list_names(root.members)
         return f'event {root.name}({params})'
 
+    def visit_ErrorDefinition(self, root):
+        params = list_names(root.parameters.parameters)
+        return f'error {root.name}({params})'
+
     def visit_EventDefinition(self, root):
         params = list_names(root.parameters.parameters)
         return f'event {root.name}({params})'
@@ -179,6 +183,8 @@ class Visitor:
             self.visit_ContractDefinition(root)
         elif isinstance(root, types.EnumDefinition):
             return self.visit_EnumDefinition(root)
+        elif isinstance(root, types.ErrorDefinition):
+            return self.visit_ErrorDefinition(root)
         elif isinstance(root, types.EventDefinition):
             return self.visit_EventDefinition(root)
         elif isinstance(root, types.FunctionDefinition):
@@ -201,6 +207,9 @@ def to_mermaid(artifacts):
         unit = wrap(ast['AST'])
         visitor.visit(unit)
 
+    print('---')
+    print('title: github.com/ydm/mermaider')
+    print('---')
     print('classDiagram')
     for name, desc in visitor.classes.items():
         # Class definition.
