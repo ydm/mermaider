@@ -77,3 +77,5 @@ python main.py
 
 ### TODOs
 - `+struct Oracle.Observation[65535] observations` ...
+- Integrate [solc-select](https://pypi.org/project/solc-select/)?
+
