@@ -73,3 +73,7 @@ python -m pip install --upgrade pip
 python -m pip install eth-hash[pycryptodome]
 python main.py
 ```
+
+
+### TODOs
+- `+struct Oracle.Observation[65535] observations` ...
