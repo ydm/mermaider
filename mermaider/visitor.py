@@ -85,9 +85,7 @@ class Visitor:
         if root.abstract:
             assert desc.kind == Kind.CONTRACT, f'have={desc.kind} want=CONTRACT'
             desc.annotation = 'abstract'
-            # desc.members.append('<<abstract>>')
         elif desc.kind != Kind.CONTRACT:
-            # desc.members.append('<<{}>>'.format(desc.kind.name.lower()))
             desc.annotation = desc.kind.name.lower()
         # Write members: variables, functions, etc.
         def f(node):
@@ -100,6 +98,8 @@ class Visitor:
             elif (isinstance(node, types.VariableDeclaration) and
                   type_string(node).startswith('contract ')):
                 desc.add_aggregate(type_string(node)[9:])
+            # Keep traversing.  If the result is a string, (and that's
+            # a bit hacky), it's included in the members list.
             res = self.visit(node)
             if isinstance(res, str):
                 desc.members.append(res)

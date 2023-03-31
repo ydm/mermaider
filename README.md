@@ -21,7 +21,7 @@ contract Hello {
 }
 ```
 
-is turned into
+gets turned into
 
 ```mermaid
 classDiagram
@@ -49,9 +49,9 @@ For a more complex example, check [UniswapV3Pool](./examples/UniswapV3Pool.merma
 - Expected input is `solc` ^0.8 ASTs.
 
 ```
-solc                                                                 \
-  /home/someone/path/to/my/Contract.sol                              \
-  @openzeppelin=/home/someone/path/to/my/node_modules/\@openzeppelin \
+solc                                                                  \
+  /home/someone/path/to/my/Contract.sol                               \
+  '@openzeppelin=/home/someone/path/to/my/node_modules/@openzeppelin' \
   --combined-json ast >/tmp/artifacts.json
 
 git clone git@github.com:ydm/mermaider.git

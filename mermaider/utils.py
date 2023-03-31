@@ -6,7 +6,9 @@ def gentypes(sources):
     '''
     Usage:
 
-    $ solc ~/something/Something.sol @openzeppelin=/home/someone/node_modules/\@openzeppelin >/tmp/artifacts.json
+    $ solc /home/a/b/Something.sol                             \
+           @openzeppelin=/home/a/b/node_modules/\@openzeppelin \
+           >/tmp/artifacts.json
 
     import json
     from mermaider.utils import gentypes
