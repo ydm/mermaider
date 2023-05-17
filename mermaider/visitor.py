@@ -70,7 +70,9 @@ class Visitor:
 
     def _add_class(self, root, desc):
         assert root.nodeType in ('ContractDefinition', 'StructDefinition')
-        error = f'{root.canonicalName} conflicts with another declaration'
+        if root.canonicalName in self.classes:
+            error = f'{root.canonicalName} conflicts with another declaration'
+            raise ValueError(error)
         self.classes[root.canonicalName] = desc
 
     def visit_ContractDefinition(self, root):
@@ -121,7 +123,9 @@ class Visitor:
         return f'event {root.name}({params})'
 
     def visit_FunctionDefinition(self, root):
-        if root.kind == 'receive':
+        if root.kind == 'constructor':
+            signature = 'constructor()'
+        elif root.kind == 'receive':
             signature = 'receive()'
         else:
             params = list_types(root.parameters.parameters)
@@ -203,7 +207,7 @@ class Visitor:
 
 def to_mermaid(artifacts):
     visitor = Visitor()
-    for filename, ast in artifacts['sources'].items():
+    for _, ast in artifacts['sources'].items():
         unit = wrap(ast['AST'])
         visitor.visit(unit)
 
