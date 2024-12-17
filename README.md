@@ -5,6 +5,20 @@ Mermaider is a Python tool that generates
 for smart contracts written in [Solidity](https://soliditylang.org/).
 
 
+### Quickstart
+
+```
+solc                                                                  \
+  /home/someone/path/to/my/Contract.sol                               \
+  '@openzeppelin=/home/someone/path/to/my/node_modules/@openzeppelin' \
+  --combined-json ast >/tmp/artifacts.json
+
+git clone git@github.com:ydm/mermaider.git
+cd mermaider
+python main.py </tmp/artifacts.json
+```
+
+
 ### Example
 
 ```solidity
