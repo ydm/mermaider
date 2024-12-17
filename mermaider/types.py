@@ -1,4 +1,5 @@
 from collections import namedtuple
+from os import name
 
 
 ArrayTypeName = namedtuple(
@@ -77,6 +78,7 @@ ContractDefinition = namedtuple(
      'documentation',
      'fullyImplemented',
      'id',
+     'internalFunctionIDs',
      'linearizedBaseContracts',
      'name',
      'nameLocation',
@@ -84,7 +86,8 @@ ContractDefinition = namedtuple(
      'nodes',
      'scope',
      'src',
-     'usedErrors'],
+     'usedErrors',
+     'usedEvents'],
 )
 
 ElementaryTypeName = namedtuple(
@@ -114,6 +117,7 @@ EmitStatement = namedtuple(
 EnumDefinition = namedtuple(
     'EnumDefinition',
     ['canonicalName',
+     'documentation',
      'id',
      'members',
      'name',
@@ -156,6 +160,7 @@ ForStatement = namedtuple(
      'condition',
      'id',
      'initializationExpression',
+     'isSimpleCounterLoop',
      'loopExpression',
      'nodeType',
      'src'],
@@ -163,7 +168,8 @@ ForStatement = namedtuple(
 
 FunctionCall = namedtuple(
     'FunctionCall',
-    ['arguments',
+    ['argumentTypes',
+     'arguments',
      'expression',
      'id',
      'isConstant',
@@ -215,6 +221,18 @@ FunctionDefinition = namedtuple(
      'src',
      'stateMutability',
      'virtual',
+     'visibility'],
+)
+
+FunctionTypeName = namedtuple(
+    'FunctionTypeName',
+    ['id',
+     'nodeType',
+     'parameterTypes',
+     'returnParameterTypes',
+     'src',
+     'stateMutability',
+     'typeDescriptions',
      'visibility'],
 )
 
@@ -302,7 +320,16 @@ Literal = namedtuple(
 
 Mapping = namedtuple(
     'Mapping',
-    ['id', 'keyType', 'nodeType', 'src', 'typeDescriptions', 'valueType'],
+    ['id',
+     'keyName',
+     'keyNameLocation',
+     'keyType',
+     'nodeType',
+     'src',
+     'typeDescriptions',
+     'valueName',
+     'valueNameLocation',
+     'valueType'],
 )
 
 MemberAccess = namedtuple(
@@ -399,6 +426,7 @@ SourceUnit = namedtuple(
 StructDefinition = namedtuple(
     'StructDefinition',
     ['canonicalName',
+     'documentation',
      'id',
      'members',
      'name',
@@ -412,6 +440,21 @@ StructDefinition = namedtuple(
 StructuredDocumentation = namedtuple(
     'StructuredDocumentation',
     ['id', 'nodeType', 'src', 'text'],
+)
+
+TryCatchClause = namedtuple(
+    'TryCatchClause',
+    ['block',
+     'errorName',
+     'id',
+     'nodeType',
+     'parameters',
+     'src'],
+)
+
+TryStatement = namedtuple(
+    'TryStatement',
+    ['clauses', 'externalCall', 'id', 'nodeType', 'src'],
 )
 
 TupleExpression = namedtuple(
@@ -498,40 +541,60 @@ WhileStatement = namedtuple(
 
 YulAssignment = namedtuple(
     'YulAssignment',
-    ['nodeType', 'src', 'value', 'variableNames'],
+    ['nativeSrc', 'nodeType', 'src', 'value', 'variableNames'],
 )
 
 YulBlock = namedtuple(
     'YulBlock',
-    ['nodeType', 'src', 'statements'],
+    ['nativeSrc', 'nodeType', 'src', 'statements'],
+)
+
+YulBreak = namedtuple(
+    'YulBreak',
+    ['nativeSrc', 'nodeType', 'src'],
 )
 
 YulExpressionStatement = namedtuple(
     'YulExpressionStatement',
-    ['expression', 'nodeType', 'src'],
+    ['expression', 'nativeSrc', 'nodeType', 'src'],
+)
+
+YulForLoop = namedtuple(
+    'YulForLoop',
+    ['body', 'condition', 'nativeSrc', 'nodeType', 'post', 'pre', 'src'],
 )
 
 YulFunctionCall = namedtuple(
     'YulFunctionCall',
-    ['arguments', 'functionName', 'nodeType', 'src'],
+    ['arguments', 'functionName', 'nativeSrc', 'nodeType', 'src'],
+)
+
+YulFunctionDefinition = namedtuple(
+    'YulFunctionDefinition',
+    ['body', 'name', 'nativeSrc', 'nodeType', 'parameters', 'src'],
 )
 
 YulIdentifier = namedtuple(
     'YulIdentifier',
-    ['name', 'nodeType', 'src'],
+    ['name', 'nativeSrc', 'nodeType', 'src'],
+)
+
+YulIf = namedtuple(
+    'YulIf',
+    ['body', 'condition', 'nativeSrc', 'nodeType', 'src'],
 )
 
 YulLiteral = namedtuple(
     'YulLiteral',
-    ['kind', 'nodeType', 'src', 'type', 'value'],
+    ['kind', 'nativeSrc', 'nodeType', 'src', 'type', 'value'],
 )
 
 YulTypedName = namedtuple(
     'YulTypedName',
-    ['name', 'nodeType', 'src', 'type'],
+    ['name', 'nativeSrc', 'nodeType', 'src', 'type'],
 )
 
 YulVariableDeclaration = namedtuple(
     'YulVariableDeclaration',
-    ['nodeType', 'src', 'value', 'variables'],
+    ['nativeSrc', 'nodeType', 'src', 'value', 'variables'],
 )
